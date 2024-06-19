@@ -38,8 +38,8 @@ func _on_load_button_pressed() -> void:
 	file_open_dialog.access = FileDialog.ACCESS_FILESYSTEM
 	file_open_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_open_dialog.set_use_native_dialog(true)
-	file_open_dialog.set_root_subfolder("/users/trigcharters/documents/coding/viro/")
-	file_open_dialog.set_current_path("/users/trigcharters/documents/coding/viro/")
+	file_open_dialog.set_root_subfolder("/your work path/")
+	file_open_dialog.set_current_path("/your work path/")
 	file_open_dialog.set_filters(PackedStringArray(["*.db ; Font Files"]))
 	file_open_dialog.show()
 
@@ -73,8 +73,8 @@ func _on_save_button_pressed() -> void:
 	file_save_dialog.access = FileDialog.ACCESS_FILESYSTEM
 	file_save_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
 	file_save_dialog.set_use_native_dialog(true)
-	file_save_dialog.set_root_subfolder("/users/trigcharters/documents/coding/viro/")
-	file_save_dialog.set_current_path("/users/trigcharters/documents/coding/viro/")
+	file_save_dialog.set_root_subfolder("/your work path/")
+	file_save_dialog.set_current_path("/your work path/")
 	file_save_dialog.set_filters(PackedStringArray(["*.db ; Font Files"]))
 	file_save_dialog.show()
 
