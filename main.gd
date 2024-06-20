@@ -13,10 +13,12 @@ var graphics_buffer: Image
 var graphics_texture : ImageTexture
 var activechar: int = 0
 var chardb: Array[String] = []
+var charFlag: Array[int] = []
 
 
 func _ready() -> void:
-	chardb.resize(1024)
+	chardb.resize(2056)
+	charFlag.resize(256)
 	setup_graphics()
 
 
@@ -38,8 +40,8 @@ func _on_load_button_pressed() -> void:
 	file_open_dialog.access = FileDialog.ACCESS_FILESYSTEM
 	file_open_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_open_dialog.set_use_native_dialog(true)
-	file_open_dialog.set_root_subfolder("/your work path/")
-	file_open_dialog.set_current_path("/your work path/")
+	file_open_dialog.set_root_subfolder("/Your Work Path/")
+	file_open_dialog.set_current_path("/Your Work Path/")
 	file_open_dialog.set_filters(PackedStringArray(["*.db ; Font Files"]))
 	file_open_dialog.show()
 
@@ -56,13 +58,19 @@ func load_font_db(path: String) -> void:
 	if fileData.begins_with("Error"):
 		file_result.text = fileData
 	else:
-		activechar = 0
-		var fileLines: Array = fileData.split(",",false)
+		var sectionData: Array = fileData.split("|",false)
+		var charFlags: Array = sectionData[0].split(",",false)
+		for i in range(charFlags.size()):
+			charFlag[i] = charFlags[i].to_int()
+				
+		var fileLines: Array = sectionData[1].split(",",false)
 		for i: int in range(fileLines.size()):
 			if fileLines[i] == "0":
 				chardb[i] = ""
 			else:
 				chardb[i] = to_binary(fileLines[i].to_int())
+
+	activechar = 0
 	draw_chararcter()	
 
 func _on_load_internal_button_pressed() -> void:
@@ -73,8 +81,8 @@ func _on_save_button_pressed() -> void:
 	file_save_dialog.access = FileDialog.ACCESS_FILESYSTEM
 	file_save_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
 	file_save_dialog.set_use_native_dialog(true)
-	file_save_dialog.set_root_subfolder("/your work path/")
-	file_save_dialog.set_current_path("/your work path/")
+	file_save_dialog.set_root_subfolder("/Your Work Path/")
+	file_save_dialog.set_current_path("/Your Work Path/")
 	file_save_dialog.set_filters(PackedStringArray(["*.db ; Font Files"]))
 	file_save_dialog.show()
 
@@ -87,7 +95,12 @@ func _on_file_save_dialog_file_selected(path: String) -> void:
 
 
 func save_font_db(path: String) -> void:
-	var savedb: Array[String] = chardb.duplicate()	
+	var savedb: Array[String] = chardb.duplicate()
+	var flagdb: Array[String] = []
+	
+	for i: int in range(charFlag.size()):
+		flagdb.append(str(charFlag[i]))
+			
 	for i: int in range(savedb.size()):
 		if savedb[i].is_empty() or savedb[i] == "00000000":
 			savedb[i] = "0"
@@ -96,9 +109,10 @@ func save_font_db(path: String) -> void:
 		if savedb[i] != "0":
 			var val: int = binary_to_int(savedb[i])
 			savedb[i] = str(val)
-			
+	
+	var flagData: String = ",".join(flagdb)		
 	var fileData: String = ",".join(savedb)
-	file_result.text = save_file(path, fileData)
+	file_result.text = save_file(path, flagData + "|" + fileData)
 
 
 func _on_clear_button_pressed() -> void:
@@ -109,8 +123,8 @@ func _on_clear_button_pressed() -> void:
 
 func _on_plus_10_pressed() -> void:
 	activechar += 10
-	if activechar > 127:
-		activechar = 127
+	if activechar > 255:
+		activechar = 255
 	draw_chararcter()
 
 
@@ -128,7 +142,7 @@ func _on_pre_button_pressed() -> void:
 
 
 func _on_next_button_pressed() -> void:
-	if activechar < 127:
+	if activechar < 255:
 		activechar += 1
 		draw_chararcter()
 
@@ -145,6 +159,23 @@ func flip_char_bit(x: int, y: int) -> void:
 		charBits[x] = "0"
 
 	chardb[(8 * activechar) + y] = "".join(charBits)
+	
+	var startline: int = 7
+	var endLine: int = 0
+	
+	#Set the has data flag
+	charFlag[activechar] = 0
+	for i: int in range(8):
+		if chardb[(8 * activechar) + i].is_empty() or chardb[(8 * activechar) + i] == "00000000":
+			pass
+		else:
+			charFlag[activechar] = 1
+			if i < startline: startline = i
+			if i > endLine: endLine = i
+			
+	if charFlag[activechar] > 0:
+		charFlag[activechar] = ((endLine + 1) * 100) + startline
+	
 	draw_chararcter()
 
 
