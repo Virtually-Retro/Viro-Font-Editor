@@ -47,7 +47,7 @@ func _on_load_button_pressed() -> void:
 
 
 func _on_file_open_dialog_file_selected(path: String) -> void:
-	if path.ends_with("font.db"):
+	if path.ends_with(".db"):
 		load_font_db(path)
 	else:
 		file_result.text = "Invalid Font file Name."
@@ -88,7 +88,7 @@ func _on_save_button_pressed() -> void:
 
 
 func _on_file_save_dialog_file_selected(path: String) -> void:
-	if path.ends_with("font.db"):
+	if path.ends_with(".db"):
 		save_font_db(path)
 	else:
 		file_result.text = "Invalid Font file Name."
