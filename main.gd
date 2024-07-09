@@ -42,12 +42,12 @@ func _on_load_button_pressed() -> void:
 	file_open_dialog.set_use_native_dialog(true)
 	file_open_dialog.set_root_subfolder("/users/trigcharters/documents/coding/viro/")
 	file_open_dialog.set_current_path("/users/trigcharters/documents/coding/viro/")
-	file_open_dialog.set_filters(PackedStringArray(["*.db ; Font Files"]))
+	file_open_dialog.set_filters(PackedStringArray(["*.fdb ; Font Files"]))
 	file_open_dialog.show()
 
 
 func _on_file_open_dialog_file_selected(path: String) -> void:
-	if path.ends_with(".db"):
+	if path.ends_with(".fdb"):
 		load_font_db(path)
 	else:
 		file_result.text = "Invalid Font file Name."
@@ -74,7 +74,7 @@ func load_font_db(path: String) -> void:
 	draw_chararcter()	
 
 func _on_load_internal_button_pressed() -> void:
-	load_font_db("res://font.db")
+	load_font_db("res://font.fdb")
 
 
 func _on_save_button_pressed() -> void:
@@ -83,12 +83,12 @@ func _on_save_button_pressed() -> void:
 	file_save_dialog.set_use_native_dialog(true)
 	file_save_dialog.set_root_subfolder("/users/trigcharters/documents/coding/viro/")
 	file_save_dialog.set_current_path("/users/trigcharters/documents/coding/viro/")
-	file_save_dialog.set_filters(PackedStringArray(["*.db ; Font Files"]))
+	file_save_dialog.set_filters(PackedStringArray(["*.fdb ; Font Files"]))
 	file_save_dialog.show()
 
 
 func _on_file_save_dialog_file_selected(path: String) -> void:
-	if path.ends_with(".db"):
+	if path.ends_with(".fdb"):
 		save_font_db(path)
 	else:
 		file_result.text = "Invalid Font file Name."
