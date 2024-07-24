@@ -20,10 +20,27 @@ expand_mode = 3
 
 [node name="coords" type="Label" parent="."]
 layout_mode = 0
-offset_left = 10.0
+offset_left = 5.0
 offset_top = 325.0
-offset_right = 310.0
+offset_right = 149.0
 offset_bottom = 348.0
+
+[node name="maxchars" type="Label" parent="."]
+layout_mode = 0
+offset_left = 154.0
+offset_top = 325.0
+offset_right = 319.0
+offset_bottom = 348.0
+horizontal_alignment = 2
+
+[node name="maxchars2" type="Label" parent="."]
+layout_mode = 0
+offset_left = 460.0
+offset_top = 336.0
+offset_right = 625.0
+offset_bottom = 359.0
+text = "Max Characters"
+horizontal_alignment = 2
 
 [node name="charID" type="Label" parent="."]
 layout_mode = 0
@@ -75,10 +92,10 @@ text = "Load Internal"
 
 [node name="fileResult" type="Label" parent="."]
 layout_mode = 0
-offset_left = 14.0
-offset_top = 442.0
-offset_right = 625.0
-offset_bottom = 465.0
+offset_left = 21.0
+offset_top = 446.0
+offset_right = 624.0
+offset_bottom = 469.0
 
 [node name="clearButton" type="Button" parent="."]
 layout_mode = 0
@@ -87,6 +104,14 @@ offset_top = 45.0
 offset_right = 633.0
 offset_bottom = 76.0
 text = "Clear"
+
+[node name="fillButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 558.0
+offset_top = 81.0
+offset_right = 633.0
+offset_bottom = 112.0
+text = "Fill"
 
 [node name="plus10" type="Button" parent="."]
 layout_mode = 0
@@ -106,9 +131,38 @@ offset_bottom = 111.0
 text = "-10
 "
 
+[node name="btnlast" type="Button" parent="."]
+layout_mode = 0
+offset_left = 410.0
+offset_top = 117.0
+offset_right = 485.0
+offset_bottom = 148.0
+text = "Last
+"
+
+[node name="btnfirst" type="Button" parent="."]
+layout_mode = 0
+offset_left = 330.0
+offset_top = 117.0
+offset_right = 405.0
+offset_bottom = 148.0
+text = "First
+"
+
 [node name="FileOpenDialog" type="FileDialog" parent="."]
 
 [node name="FileSaveDialog" type="FileDialog" parent="."]
+
+[node name="numchars" type="LineEdit" parent="."]
+layout_mode = 0
+offset_left = 550.0
+offset_top = 304.0
+offset_right = 625.0
+offset_bottom = 335.0
+
+[node name="msgTimer" type="Timer" parent="."]
+wait_time = 10.0
+one_shot = true
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="pressed" from="preButton" to="." method="_on_pre_button_pressed"]
@@ -117,7 +171,12 @@ text = "-10
 [connection signal="pressed" from="loadButton" to="." method="_on_load_button_pressed"]
 [connection signal="pressed" from="loadInternalButton" to="." method="_on_load_internal_button_pressed"]
 [connection signal="pressed" from="clearButton" to="." method="_on_clear_button_pressed"]
+[connection signal="pressed" from="fillButton" to="." method="_on_fill_button_pressed"]
 [connection signal="pressed" from="plus10" to="." method="_on_plus_10_pressed"]
 [connection signal="pressed" from="minus10" to="." method="_on_minus_10_pressed"]
+[connection signal="pressed" from="btnlast" to="." method="_on_btnlast_pressed"]
+[connection signal="pressed" from="btnfirst" to="." method="_on_btnfirst_pressed"]
 [connection signal="file_selected" from="FileOpenDialog" to="." method="_on_file_open_dialog_file_selected"]
 [connection signal="file_selected" from="FileSaveDialog" to="." method="_on_file_save_dialog_file_selected"]
+[connection signal="text_submitted" from="numchars" to="." method="_on_numchars_text_submitted"]
+[connection signal="timeout" from="msgTimer" to="." method="_on_msg_timer_timeout"]

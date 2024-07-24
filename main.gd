@@ -7,19 +7,30 @@ extends Control
 @onready var file_result: Label = $fileResult
 @onready var file_open_dialog: FileDialog = $FileOpenDialog
 @onready var file_save_dialog: FileDialog = $FileSaveDialog
-
+@onready var maxchars: Label = $maxchars
+@onready var numchars: LineEdit = $numchars
+@onready var msg_timer: Timer = $msgTimer
 
 var graphics_buffer: Image
 var graphics_texture : ImageTexture
 var activechar: int = 0
 var chardb: Array[String] = []
 var charFlag: Array[int] = []
+var max_chars: int = 255
+var locked_ascii_codes: Array[int] = [10,13,32]
 
 
 func _ready() -> void:
-	chardb.resize(2056)
-	charFlag.resize(256)
+	chardb.resize(max_chars * 8)
+	charFlag.resize(max_chars)
+	display_maxchars()
 	setup_graphics()
+	draw_chararcter()
+
+
+func display_maxchars() -> void:
+	maxchars.text = "Max Characters : " + str(max_chars)
+	numchars.text = str(max_chars)
 
 
 func _on_gui_input(event: InputEvent) -> void:
@@ -51,27 +62,37 @@ func _on_file_open_dialog_file_selected(path: String) -> void:
 		load_font_db(path)
 	else:
 		file_result.text = "Invalid Font file Name."
-
+		msg_timer.start()
+		
 
 func load_font_db(path: String) -> void:
 	var fileData: String = get_file_contents(path)
 	if fileData.begins_with("Error"):
 		file_result.text = fileData
+		msg_timer.start()
 	else:
+		chardb.clear()	
+		charFlag.clear()
+		
 		var sectionData: Array = fileData.split("|",false)
 		var charFlags: Array = sectionData[0].split(",",false)
 		for i in range(charFlags.size()):
-			charFlag[i] = charFlags[i].to_int()
+			charFlag.append(charFlags[i].to_int())
 				
 		var fileLines: Array = sectionData[1].split(",",false)
 		for i: int in range(fileLines.size()):
 			if fileLines[i] == "0":
-				chardb[i] = ""
+				chardb.append("")
 			else:
-				chardb[i] = to_binary(fileLines[i].to_int())
+				chardb.append(to_binary(fileLines[i].to_int()))
 
-	activechar = 0
-	draw_chararcter()	
+		max_chars = charFlag.size()
+		display_maxchars()
+		
+		activechar = 0
+		draw_chararcter()	
+		file_result.text = "Loaded."
+		msg_timer.start()
 
 func _on_load_internal_button_pressed() -> void:
 	load_font_db("res://font.fdb")
@@ -92,6 +113,7 @@ func _on_file_save_dialog_file_selected(path: String) -> void:
 		save_font_db(path)
 	else:
 		file_result.text = "Invalid Font file Name."
+		msg_timer.start()
 
 
 func save_font_db(path: String) -> void:
@@ -113,18 +135,45 @@ func save_font_db(path: String) -> void:
 	var flagData: String = ",".join(flagdb)		
 	var fileData: String = ",".join(savedb)
 	file_result.text = save_file(path, flagData + "|" + fileData)
+	msg_timer.start()
+
+
+func _on_numchars_text_submitted(new_text: String) -> void:
+	if new_text.is_valid_int():
+		var newmaxchars:int = new_text.to_int()
+		if newmaxchars > 0 and newmaxchars <= 512:
+			chardb.resize(newmaxchars * 8)
+			charFlag.resize(newmaxchars)
+			max_chars = newmaxchars
+			activechar = 0
+			draw_chararcter()
+			display_maxchars()
+			return
+
+	file_result.text = "Invalid Number of chracters, must be a non-zero integer 0-512."
+	msg_timer.start()
+	display_maxchars()
+	
 
 
 func _on_clear_button_pressed() -> void:
 	for i: int in range(8):
 		chardb[(activechar * 8) + i] = ""
+	charFlag[activechar] = 0
+	draw_chararcter()
+
+
+func _on_fill_button_pressed() -> void:
+	for i: int in range(8):
+		chardb[(activechar * 8) + i] = "11111111"
+	charFlag[activechar] = 800
 	draw_chararcter()
 
 
 func _on_plus_10_pressed() -> void:
 	activechar += 10
-	if activechar > 255:
-		activechar = 255
+	if activechar > max_chars:
+		activechar = max_chars - 1
 	draw_chararcter()
 
 
@@ -142,12 +191,29 @@ func _on_pre_button_pressed() -> void:
 
 
 func _on_next_button_pressed() -> void:
-	if activechar < 255:
+	if activechar < max_chars - 1:
 		activechar += 1
 		draw_chararcter()
 
 
+func _on_btnfirst_pressed() -> void:
+	activechar = 0
+	draw_chararcter()
+
+
+func _on_btnlast_pressed() -> void:
+	activechar = max_chars - 1
+	draw_chararcter()
+
+
+func _on_msg_timer_timeout() -> void:
+	file_result.text = ""
+
+
 func flip_char_bit(x: int, y: int) -> void:
+	if locked_ascii_codes.find(activechar) > -1:
+		return
+		
 	var charLine: String = chardb[(8 * activechar) + y]
 	if charLine.is_empty():
 		charLine = "00000000"
@@ -175,7 +241,7 @@ func flip_char_bit(x: int, y: int) -> void:
 			
 	if charFlag[activechar] > 0:
 		charFlag[activechar] = ((endLine + 1) * 100) + startline
-	
+		
 	draw_chararcter()
 
 
@@ -192,7 +258,10 @@ func draw_chararcter() -> void:
 	
 	draw_grid()
 	update_graphics()
-	char_id.text = "ASCII Code: " + str(activechar)
+	if locked_ascii_codes.find(activechar) > -1:
+		char_id.text = "ASCII Code:  " + str(activechar) + "  (Locked)"
+	else:
+		char_id.text = "ASCII Code:  " + str(activechar)
 
 
 func setup_graphics() -> void:
@@ -303,9 +372,3 @@ func save_file(path: String, filedata: String) -> String:
 			return "Error saving file."
 	else: 
 		return "An error occurred when trying to save the file."
-
-
-
-
-
-
