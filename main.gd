@@ -16,7 +16,7 @@ var graphics_texture : ImageTexture
 var activechar: int = 0
 var chardb: Array[String] = []
 var charFlag: Array[int] = []
-var max_chars: int = 255
+var max_chars: int = 128
 var locked_ascii_codes: Array[int] = [10,13,32]
 
 
@@ -150,7 +150,7 @@ func _on_numchars_text_submitted(new_text: String) -> void:
 			display_maxchars()
 			return
 
-	file_result.text = "Invalid Number of chracters, must be a non-zero integer 0-512."
+	file_result.text = "Invalid Number of chracters, must be a non-zero integer from 1-511."
 	msg_timer.start()
 	display_maxchars()
 	
@@ -259,9 +259,9 @@ func draw_chararcter() -> void:
 	draw_grid()
 	update_graphics()
 	if locked_ascii_codes.find(activechar) > -1:
-		char_id.text = "ASCII Code:  " + str(activechar) + "  (Locked)"
+		char_id.text = "Character Code:  " + str(activechar) + "  (Locked)"
 	else:
-		char_id.text = "ASCII Code:  " + str(activechar)
+		char_id.text = "Character Code:  " + str(activechar)
 
 
 func setup_graphics() -> void:
