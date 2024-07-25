@@ -150,7 +150,7 @@ func _on_numchars_text_submitted(new_text: String) -> void:
 			display_maxchars()
 			return
 
-	file_result.text = "Invalid Number of chracters, must be a non-zero integer from 1-511."
+	file_result.text = "Invalid Number of chracters, must be a non-zero integer from 1-512."
 	msg_timer.start()
 	display_maxchars()
 	
