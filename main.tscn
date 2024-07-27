@@ -36,9 +36,9 @@ horizontal_alignment = 2
 [node name="maxchars2" type="Label" parent="."]
 layout_mode = 0
 offset_left = 460.0
-offset_top = 336.0
+offset_top = 325.0
 offset_right = 625.0
-offset_bottom = 359.0
+offset_bottom = 348.0
 text = "Max Characters"
 horizontal_alignment = 2
 
@@ -68,34 +68,34 @@ text = "Next"
 [node name="saveButton" type="Button" parent="."]
 layout_mode = 0
 offset_left = 550.0
-offset_top = 407.0
+offset_top = 436.0
 offset_right = 625.0
-offset_bottom = 438.0
+offset_bottom = 467.0
 text = "Save"
 
 [node name="loadButton" type="Button" parent="."]
 layout_mode = 0
 offset_left = 468.0
-offset_top = 407.0
+offset_top = 436.0
 offset_right = 543.0
-offset_bottom = 438.0
+offset_bottom = 467.0
 text = "Load"
 
 [node name="loadInternalButton" type="Button" parent="."]
 layout_mode = 0
 offset_left = 20.0
-offset_top = 407.0
+offset_top = 436.0
 offset_right = 140.0
-offset_bottom = 438.0
+offset_bottom = 467.0
 tooltip_text = "Load the default database."
 text = "Load Internal"
 
 [node name="fileResult" type="Label" parent="."]
 layout_mode = 0
 offset_left = 21.0
-offset_top = 446.0
+offset_top = 405.0
 offset_right = 624.0
-offset_bottom = 469.0
+offset_bottom = 428.0
 
 [node name="clearButton" type="Button" parent="."]
 layout_mode = 0
@@ -156,9 +156,9 @@ text = "First
 [node name="numchars" type="LineEdit" parent="."]
 layout_mode = 0
 offset_left = 550.0
-offset_top = 304.0
+offset_top = 293.0
 offset_right = 625.0
-offset_bottom = 335.0
+offset_bottom = 324.0
 
 [node name="msgTimer" type="Timer" parent="."]
 wait_time = 10.0

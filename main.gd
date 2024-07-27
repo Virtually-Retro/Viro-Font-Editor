@@ -17,10 +17,11 @@ var activechar: int = 0
 var chardb: Array[String] = []
 var charFlag: Array[int] = []
 var max_chars: int = 128
-var locked_ascii_codes: Array[int] = [10,13,32]
+var locked_ascii_codes: Array[int] = [9,10,13,32]
 
 
 func _ready() -> void:
+	get_window().title = "Viro Font Editor"
 	chardb.resize(max_chars * 8)
 	charFlag.resize(max_chars)
 	display_maxchars()
@@ -157,6 +158,9 @@ func _on_numchars_text_submitted(new_text: String) -> void:
 
 
 func _on_clear_button_pressed() -> void:
+	if locked_ascii_codes.find(activechar) > -1:
+		return
+	
 	for i: int in range(8):
 		chardb[(activechar * 8) + i] = ""
 	charFlag[activechar] = 0
@@ -164,6 +168,9 @@ func _on_clear_button_pressed() -> void:
 
 
 func _on_fill_button_pressed() -> void:
+	if locked_ascii_codes.find(activechar) > -1:
+		return
+	
 	for i: int in range(8):
 		chardb[(activechar * 8) + i] = "11111111"
 	charFlag[activechar] = 800
